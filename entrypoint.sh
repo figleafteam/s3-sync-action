@@ -32,6 +32,11 @@ if [ -z "$DISTRIBUTION_ID" ]; then
   exit 1
 fi
 
+if [[ -z "$PATHS"  ]]; then
+  echo "error: PATHS  is not set. Quitting."
+  err=1
+fi
+
 # Create a dedicated profile for this action to avoid conflicts
 # with past/future actions.
 # https://github.com/jakejarvis/s3-sync-action/issues/1
@@ -52,7 +57,7 @@ sh -c "aws s3 sync ${SOURCE_DIR:-.} s3://${AWS_S3_BUCKET}/${DEST_DIR} \
 # Use our dedicated profile and suppress verbose messages.
 # All other flags are optional via `args:` directive.
 sh -c "aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} \
-          --paths '${SOURCE_PATH}' \
+          --paths '${PATHS}' \
           --profile s3-sync-action $*"
 
 # Clear out credentials after we're done.

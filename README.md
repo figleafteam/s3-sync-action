@@ -41,6 +41,7 @@ jobs:
         AWS_REGION: 'us-west-1'   # optional: defaults to us-east-1
         SOURCE_DIR: 'public'      # optional: defaults to entire repository
         DISTRIBUTION_ID: ${{ secrets.DISTRIBUTION_ID }}
+        PATHS: '/images/*'
 ```
 
 
