@@ -27,6 +27,11 @@ if [ -n "$AWS_S3_ENDPOINT" ]; then
   ENDPOINT_APPEND="--endpoint-url $AWS_S3_ENDPOINT"
 fi
 
+if [ -z "$DISTRIBUTION_ID" ]; then
+  echo "DISTRIBUTION_ID is not set. Quitting."
+  exit 1
+fi
+
 # Create a dedicated profile for this action to avoid conflicts
 # with past/future actions.
 # https://github.com/jakejarvis/s3-sync-action/issues/1
@@ -43,6 +48,12 @@ sh -c "aws s3 sync ${SOURCE_DIR:-.} s3://${AWS_S3_BUCKET}/${DEST_DIR} \
               --profile s3-sync-action \
               --no-progress \
               ${ENDPOINT_APPEND} $*"
+
+# Use our dedicated profile and suppress verbose messages.
+# All other flags are optional via `args:` directive.
+sh -c "aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} \
+          --paths '${SOURCE_PATH}' \
+          --profile s3-sync-action $*"
 
 # Clear out credentials after we're done.
 # We need to re-run `aws configure` with bogus input instead of
