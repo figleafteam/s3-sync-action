@@ -58,7 +58,7 @@ sh -c "aws s3 sync ${SOURCE_DIR:-.} s3://${AWS_S3_BUCKET}/${DEST_DIR} \
 # All other flags are optional via `args:` directive.
 sh -c "aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} \
           --paths '${PATHS}' \
-          --profile s3-sync-action $*"
+          --profile s3-sync-action"
 
 # Clear out credentials after we're done.
 # We need to re-run `aws configure` with bogus input instead of
